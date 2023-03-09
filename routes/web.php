@@ -1,0 +1,42 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NoteController;
+use App\Http\Controllers\NotesController;
+use App\Http\Controllers\ProfileController;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/notes', [NoteController::class, 'index'])->name('notes.index');
+    Route::get('/notes/pin/{id}', [NoteController::class, 'pin'])->name('notes.pin');
+    Route::get('/notes/unpin/{id}', [NoteController::class, 'unpin'])->name('notes.unpin');
+    Route::post('/notes/store', [NoteController::class, 'store'])->name('notes.store');
+    Route::get('/notes/edit/{note}', [NoteController::class, 'edit'])->name('notes.edit');
+    Route::get('/notes/delete/{id}', [NoteController::class, 'destroy'])->name('notes.destroy');
+});
+
+require __DIR__.'/auth.php';
+
+
